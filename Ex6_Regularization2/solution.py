@@ -22,6 +22,23 @@ def solution_1a_create_model(hidden_dims: list[int]) -> nn.Module:
     )
     return model
 
+def solution_2a_train_one_epoch(model, dataloader, optimizer):
+    losses = []
+    for batch, labels in dataloader:
+        batch = batch.to(DEVICE)
+        labels = labels.to(DEVICE)
+
+        optimizer.zero_grad()
+
+        preds = model(batch)
+        loss = cross_entropy(preds, labels)
+        loss.backward()
+        optimizer.step()
+
+        losses.append(loss.item())
+
+    avg_loss = sum(losses) / len(losses)
+    return avg_loss
 
 def solution_2b_evaluate(
     model: nn.Module, dataloader: DataLoader
@@ -51,24 +68,6 @@ def solution_2b_evaluate(
 
     return avg_loss, avg_acc
 
-
-def solution_2a_train_one_epoch(model, dataloader, optimizer):
-    losses = []
-    for batch, labels in dataloader:
-        batch = batch.to(DEVICE)
-        labels = labels.to(DEVICE)
-
-        optimizer.zero_grad()
-
-        preds = model(batch)
-        loss = cross_entropy(preds, labels)
-        loss.backward()
-        optimizer.step()
-
-        losses.append(loss.item())
-
-    avg_loss = sum(losses) / len(losses)
-    return avg_loss
 
 
 def solution_2c_plot_train_and_val_loss(
